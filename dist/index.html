@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="在浏览器中打开 Anki 卡包，搜索和阅读卡片。文件仅在本地处理。">
+<meta name="theme-color" content="#173f35"><title>拾卡 · Anki 卡包浏览器</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+<script defer src="vendor/purify.min.js"></script><script defer src="vendor/mustache.min.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+<svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-cards" viewBox="0 0 24 24"><rect x="7" y="5" width="13" height="16" rx="2"/><path d="M16 2H5a2 2 0 0 0-2 2v13M11 10h5M11 14h3"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10H3Z"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+</defs></svg>
+<div class="app-shell">
+<aside class="sidebar">
+<a class="brand" href="./" aria-label="拾卡首页"><svg><use href="#i-cards"/></svg><span>拾卡<span class="brand-en">Anki Reader</span></span></a>
+<button class="side-import" data-import><svg><use href="#i-plus"/></svg>导入卡包</button>
+<div class="library-heading">卡包</div>
+<nav id="deck-nav" aria-label="牌组"><p class="side-empty">尚未导入卡包</p></nav>
+<div class="sidebar-bottom"><span class="local-dot"></span>文件仅在本地处理</div>
+</aside>
+<main>
+<header class="topbar"><div class="breadcrumb"><svg><use href="#i-cards"/></svg><span>卡包浏览器</span><span id="file-crumb"></span></div><button class="import-button" data-import><svg><use href="#i-plus"/></svg>导入卡包</button></header>
+<div class="status-banner" id="status" role="status" hidden><span></span><button id="dismiss-status" aria-label="关闭提示"><svg><use href="#i-close"/></svg></button></div>
+<section class="welcome" id="welcome">
+<div class="welcome-heading"><h1>打开你的<br><span>Anki 卡包。</span></h1></div>
+<div class="drop-target" id="drop-target"><div class="upload-glyph"><svg><use href="#i-upload"/></svg></div><h2>将卡包拖到这里</h2><p>.apkg / .colpkg / .anki2 · 最大 256 MB</p><button class="primary" data-import>选择卡包<svg><use href="#i-arrow"/></svg></button><div class="local-note"><svg><use href="#i-shield"/></svg>本地读取，无需上传</div></div>
+<div class="sample-row"><div><strong>先随便翻翻</strong><span>一个小小的植物学示例卡包</span></div><button id="load-demo">打开示例<svg><use href="#i-arrow"/></svg></button></div>
+</section>
+<section id="workspace" class="workspace" hidden>
+<div class="workspace-heading"><div><div class="title-line"><h1 id="deck-title">全部卡片</h1><span id="demo-label" class="demo-label" hidden>示例卡包</span></div><p id="collection-count"></p></div><button class="text-button" id="close-deck">关闭卡包</button></div>
+<div class="browser-panel">
+<section class="list-pane" aria-label="卡片列表">
+<div class="list-tools"><label class="search-box"><svg><use href="#i-search"/></svg><input id="search" type="search" placeholder="搜索卡片内容…" aria-label="搜索卡片内容"><kbd>/</kbd></label><div class="filters"><select id="tag-filter" aria-label="按标签筛选"><option value="">全部标签</option></select><span id="result-count" aria-live="polite"></span></div></div>
+<div id="card-list" class="card-list" role="list" aria-label="搜索结果"></div>
+<div class="list-footer"><span id="page-indicator"></span><button id="page-prev" aria-label="上一页"><svg class="reverse"><use href="#i-arrow"/></svg></button><button id="page-next" aria-label="下一页"><svg><use href="#i-arrow"/></svg></button></div>
+</section>
+<section class="detail-pane" id="detail-pane" aria-label="卡片预览">
+<div class="detail-toolbar"><div class="face-tabs" role="tablist" aria-label="卡片内容"><button id="front-tab" role="tab" aria-selected="true" data-face="front">正面</button><button id="back-tab" role="tab" aria-selected="false" data-face="back">背面</button><button id="fields-tab" role="tab" aria-selected="false" data-face="fields">字段</button></div><span id="card-position"></span></div>
+<div class="preview-scroll" id="preview-scroll"><div class="card-caption" id="card-caption"></div><iframe id="card-frame" title="卡片内容" sandbox="allow-same-origin" referrerpolicy="no-referrer"></iframe><div id="fields-view" hidden></div><p id="render-note" class="render-note" hidden></p><div id="card-tags" class="card-tags"></div></div>
+<div class="detail-footer"><button id="card-prev" class="navigation-button" aria-label="上一张卡片"><svg class="reverse"><use href="#i-arrow"/></svg></button><button id="flip" class="primary">查看答案<span>空格</span></button><button id="card-next" class="navigation-button" aria-label="下一张卡片"><svg><use href="#i-arrow"/></svg></button></div>
+</section>
+</div>
+</section>
+<footer class="app-footer"><a href="vendor/LICENSES.txt" target="_blank" rel="noopener">开源许可</a><span id="footer-format">支持新旧版 Anki 卡包</span></footer>
+</main>
+</div>
+<input type="file" id="file-input" accept=".apkg,.colpkg,.anki2" hidden>
+<div class="drop-overlay" id="drop-overlay" hidden>松开，打开这个卡包</div>
+</body></html>
