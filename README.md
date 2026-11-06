@@ -1,14 +1,44 @@
 # 拾卡 · Anki 卡包浏览器
 
-静态网页，用于导入 Anki 卡包、按牌组或标签筛选、全文搜索并查看卡片正反面及原始字段。文件在浏览器 Worker 中解析，不上传、不持久保存；刷新网页后需要重新导入。
+使用 Next.js App Router、TypeScript 和 shadcn/ui 的 Anki 卡包浏览器。支持按牌组或标签筛选、全文搜索、查看卡片正反面及原始字段。文件在浏览器 Worker 中解析，不上传、不持久保存；刷新网页后需要重新导入。
 
 ## 运行
 
-在项目目录运行 `python3 -m http.server 8765 --directory dist`，然后打开 `http://127.0.0.1:8765`。所有运行依赖已包含在 `dist/vendor`，不需要安装或构建。
+使用 Node.js 22，在项目目录运行：
+
+```sh
+npm ci
+npm run dev
+```
+
+打开 `http://localhost:3000`。
+
+```sh
+npm run typecheck
+npm run lint
+npm run build
+```
+
+构建产物在 `out/`，可用 `python3 -m http.server 8765 --directory out` 预览。无需 Node.js 生产服务器。开发与构建命令会从已安装依赖生成 SQLite WASM、加载器及许可证清单到 `public/vendor/`，不要手动编辑这些文件。
+
+## 代码结构
+
+- `src/app/`：页面、元信息和暖灰 / 炭黑 / 陶土橙主题。
+- `src/components/anki-reader.tsx`：导入、筛选、分页和卡片导航。
+- `src/components/card-preview.tsx`：iframe 预览及音频交互。
+- `src/components/ui/`：官方 shadcn CLI 引入的组件源码；配置在 `components.json`。
+- `src/lib/parser.worker.ts`：卡包解析与入口校验。
+- `src/lib/card-renderer.ts`：Anki 模板、填空及本地媒体渲染。
+
+使用 Webpack 构建 Worker；应用和 Worker 之间只共享类型。没有 API 路由或服务端文件上传。
+
+应用界面的导航、列表、状态提示、空状态、分页、滚动区及表单统一使用 shadcn/ui；布局与主题由应用层维护，卡包模板保持独立。项目约定见 `AGENTS.md`，组件映射见 `DESIGN.md`。
+
+shadcn 源码有两处本地修正，升级时需保留或核对上游修复：`SidebarMenuSkeleton` 使用固定宽度，避免渲染时调用 `Math.random()`（[上游问题](https://github.com/shadcn-ui/ui/issues/8666)）；`useIsMobile` 使用 React `useSyncExternalStore` 订阅媒体查询，避免 effect 内同步设置状态。未关闭对应 lint 规则。
 
 ## 部署到 Netlify
 
-连接 GitHub 仓库，发布分支选择 `main`。无需构建命令，发布目录为 `dist`；根目录的 `netlify.toml` 已设置发布目录。推送到 main 后由 Netlify 自动发布。
+连接 GitHub 仓库，发布分支选择 `main`。构建命令为 `npm run build`，发布目录为 `out`；根目录的 `netlify.toml` 已配置 Node.js 22 与静态导出。推送到 main 后由 Netlify 自动发布。
 
 ## 格式与边界
 
@@ -22,7 +52,7 @@
 
 ## 示例
 
-`dist/sample.apkg` 是原创植物学内容，共 12 张卡片，其中两张是填空卡。生成源为 `tools/make-sample.py`，用于维护用户可见示例，不是测试脚本。
+`public/sample.apkg` 是原创植物学内容，共 12 张卡片，其中两张是填空卡。生成源为 `tools/make-sample.py`，运行 `python3 tools/make-sample.py` 可重新生成。它用于维护用户可见示例，不是测试脚本。
 
 ## 方案来源
 
@@ -35,4 +65,6 @@
 
 音频重播按钮遵循 Anki 公开的样式接口：https://docs.ankiweb.net/templates/styling.html#audio-replay-buttons 。默认样式先应用，卡包自带样式可以覆盖，不把所有音频统一成浏览器播放器。
 
-浏览器依赖：sql.js 1.15.2 (MIT)、fflate 0.8.3 (MIT)、fzstd 0.1.1 (MIT)、DOMPurify 3.4.17 (MPL-2.0 OR Apache-2.0)、protobufjs 8.8.1 (BSD-3-Clause)、Mustache 4.2.0 (MIT)。完整许可证在 `dist/vendor/LICENSES.txt`。
+框架迁移采用 [Next.js 静态导出](https://nextjs.org/docs/app/guides/static-exports) 和 [shadcn/ui 官方组件](https://github.com/shadcn-ui/ui)（均为 MIT）。实施前检索了 [Next.js Worker 构建问题](https://github.com/vercel/next.js/issues/100131) 和 [shadcn 的 hydration 问题](https://github.com/shadcn-ui/ui/issues/6205)。
+
+浏览器解析库仍为 sql.js、fflate、fzstd、DOMPurify、protobufjs 和 Mustache。依赖版本由 `package-lock.json` 锁定；许可证由 `tools/prepare-assets.mjs` 汇总到 `public/vendor/LICENSES.txt`，shadcn 源码许可证保留在 `licenses/shadcn-ui.txt`。

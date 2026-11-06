@@ -37,6 +37,6 @@ CREATE INDEX ix_notes_usn on notes(usn);CREATE INDEX ix_cards_usn on cards(usn);
         db.execute('INSERT INTO notes VALUES (?,?,?,?,?,?,?,?,?,?,?)',(nid,f'shika-{i}',base+int(iscloze),now,-1,' '+' '.join(tags)+' ',front+'\x1f'+back,front,checksum,0,''))
         db.execute('INSERT INTO cards VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(base+200+i,nid,did,0,now,-1,0,0,i+1,0,2500,0,0,0,0,0,0,''))
     db.commit();db.close()
-    with zipfile.ZipFile(root/'dist/sample.apkg','w',zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(root/'public/sample.apkg','w',zipfile.ZIP_DEFLATED) as archive:
         archive.write(dbpath,'collection.anki2');archive.writestr('media','{}')
 print('Created botanical sample: 12 cards')

@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--secondary);
+  --color-muted-foreground: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: #b53428;
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--primary);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: #f6f4f1;
+  --foreground: #302c29;
+  --card: #ffffff;
+  --primary: #a44b30;
+  --secondary: #efebe6;
+  --muted: #756c64;
+  --accent: #f3e8e0;
+  --border: #e3ddd6;
+  --sidebar: #292725;
+  --sidebar-foreground: #f7f3ef;
+  --sidebar-primary: #e2ab88;
+  --sidebar-primary-foreground: #30231a;
+  --sidebar-accent: #514039;
+  --sidebar-accent-foreground: #fff2e9;
+  --sidebar-border: #514039;
+  --sidebar-ring: #e2ab88;
+  color-scheme: light;
+  font-synthesis: none;
+}
+
+@layer base {
+  * { border-color: var(--border); }
+  body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); }
+  button:not(:disabled), select { cursor: pointer; }
+  a { text-underline-offset: 4px; }
+  a:not([data-slot]):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+  ::selection { background: #ebccba; color: #302c29; }
+  input { caret-color: var(--primary); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+}
+
+@layer components {
+  .reader-sidebar { min-width: 0; padding: 36px 20px 24px; }
+  .brand { display: flex; gap: 12px; align-items: center; padding: 0 8px; font-size: 25px; font-weight: 650; letter-spacing: .02em; }
+  .brand > svg { width: 31px; height: 36px; color: var(--sidebar-primary); }
+  .brand-en { display: block; color: #bcb5ad; font-size: 12px; letter-spacing: .06em; font-weight: 400; margin-top: 3px; }
+  .main { min-width: 0; min-height: 100dvh; }
+  .topbar { min-height: 78px; border-bottom: 1px solid var(--border); background: #fcfbf9; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .welcome { max-width: 760px; width: 100%; margin: auto; padding: 50px 50px 30px; }
+  .welcome h1 { font-size: 36px; line-height: 1.5; letter-spacing: -.025em; margin: 0 0 32px; font-weight: 600; }
+  .welcome h1 span { color: var(--primary); }
+  .app-footer { padding: 16px 40px 22px; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; margin-top: auto; }
+  .workspace { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 32px 36px 0; }
+  .workspace-heading { display: flex; justify-content: space-between; gap: 14px; align-items: center; margin-bottom: 24px; }
+  .title-line { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .workspace h1 { font-size: 25px; letter-spacing: -.02em; margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+  .workspace-heading p { font-size: 12px; color: var(--muted); margin: 9px 0 0; }
+  .browser-panel { grid-template-columns: minmax(250px, 34%) minmax(0, 1fr); height: calc(100dvh - 258px); min-height: 420px; max-height: 950px; }
+  .list-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-right: 1px solid var(--border); background: #fdfcfb; }
+  .list-tools { padding: 20px 18px 12px; }
+  /* Radix wraps viewport content in a table; constrain its columns so long titles can truncate. */
+  .reader-scroll [data-slot="scroll-area-viewport"] > div { width: 100%; table-layout: fixed; }
+  .detail-pane { min-width: 0; min-height: 0; }
+  .detail-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 17px 24px; gap: 8px; }
+  .preview-content { padding: 25px 34px; }
+  .card-caption { font-size: 12px; color: var(--muted); text-align: center; margin: 7px 0 22px; }
+  .card-frame { border: 0; width: 100%; height: 270px; display: block; background: white; }
+  .card-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 16px; }
+  .detail-footer { display: flex; gap: 12px; justify-content: center; align-items: center; padding: 19px 20px; }
+  @media (min-width: 1600px) {
+    .workspace { padding-left: 60px; padding-right: 60px; }
+    .browser-panel { grid-template-columns: 360px minmax(0, 1fr); }
+    .welcome { max-width: 850px; }
+  }
+  @media (max-width: 1050px) {
+    .reader-sidebar { padding: 30px 14px 20px; }
+    .topbar { padding: 0 24px; }
+    .workspace { padding: 26px 22px 0; }
+    .browser-panel { grid-template-columns: minmax(220px, 40%) minmax(0, 1fr); }
+    .preview-content { padding: 20px; }
+    .detail-toolbar { padding: 15px; }
+    .app-footer { padding-left: 24px; padding-right: 24px; }
+    .welcome { padding-left: 40px; padding-right: 40px; }
+    .brand { font-size: 23px; }
+  }
+  @media (max-width: 760px) {
+    .reader-sidebar { padding: 18px 20px; }
+    .brand { font-size: 22px; padding: 0; }
+    .brand > svg { width: 25px; height: 30px; }
+    .brand-en { display: none; }
+    .main { min-height: calc(100dvh - 66px); }
+    .topbar { min-height: 55px; padding: 0 19px; }
+    .welcome { padding: 38px 24px 30px; }
+    .welcome h1 { font-size: 29px; margin-bottom: 25px; }
+    .app-footer { padding: 18px 22px; }
+    .workspace { padding: 24px 16px 0; }
+    .workspace-heading { margin-bottom: 18px; }
+    .workspace h1 { font-size: 22px; }
+    .browser-panel { grid-template-columns: 1fr; height: auto; max-height: none; min-height: 0; }
+    .list-pane { border-right: 0; border-bottom: 1px solid var(--border); }
+    .list-tools { padding: 16px 16px 12px; }
+    .preview-content { padding: 20px 24px; }
+    .detail-toolbar { padding: 14px 20px; }
+    .detail-footer { padding: 16px; }
+    .title-line { flex-wrap: wrap; gap: 7px; }
+  }
+}
