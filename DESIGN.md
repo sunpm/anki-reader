@@ -14,6 +14,9 @@ colors:
   sidebar-foreground: "#f7f3ef"
   sidebar-primary: "#e2ab88"
   sidebar-accent: "#514039"
+  selection: "#ebccba"
+  brand-sub: "#bcb5ad"
+  replay: "#414141"
 ---
 
 # 拾卡设计规范
@@ -29,6 +32,7 @@ colors:
 - 主要操作、焦点与欢迎标题使用陶土橙 `primary`。侧栏导入按钮使用浅陶色 `sidebar-primary`。
 - 当前卡片使用整行浅陶底色 `accent`；没有侧边色条。
 - 次要文字使用 `muted`，分隔线使用 `border`。
+- 选区高亮使用浅陶色 `selection`，侧栏英文副标使用浅灰 `brand-sub`；内嵌音频播放按钮遵循 Anki 默认中灰 `replay`。
 - 错误提示使用浅红底与深红文字；加载状态保留明确的进度文字。
 
 卡包自带的 CSS、字体、颜色只在 iframe 内生效，不随应用配色替换。未指定模板样式的卡片采用暖黑文字、陶土色填空强调与白底。

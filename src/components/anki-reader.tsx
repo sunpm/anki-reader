@@ -2,13 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, CircleAlert, Folder, Layers, Plus, Search, ShieldCheck, Upload, X } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, CircleAlert, Folder, Layers, Plus, Search, ShieldCheck, Upload, X } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card } from "@/components/ui/card";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
-import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemTitle } from "@/components/ui/item";
+import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@/components/ui/item";
 import { Kbd } from "@/components/ui/kbd";
 import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -267,7 +267,7 @@ export function AnkiReader() {
       {status && <Alert variant={status.kind === "error" ? "destructive" : "default"} role={status.kind === "error" ? "alert" : "status"} className="rounded-none border-x-0 border-t-0 pr-14">
         {status.kind === "loading" ? <Spinner aria-hidden="true" /> : <CircleAlert />}
         <AlertDescription>{status.message}</AlertDescription>
-        {status.kind === "error" && <Button variant="ghost" size="icon-sm" className="absolute top-1.5 right-3" aria-label="关闭提示" onClick={() => setStatus(null)}><X /></Button>}
+        {status.kind === "error" && <Button variant="ghost" size="icon-sm" className="absolute top-1/2 -translate-y-1/2 right-3" aria-label="关闭提示" onClick={() => setStatus(null)}><X /></Button>}
       </Alert>}
       {!session ? <section className="welcome">
         <h1>打开你的<br /><span>Anki 卡包。</span></h1>
@@ -282,7 +282,8 @@ export function AnkiReader() {
             <span className="flex items-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="size-4" />本地读取，无需上传</span>
           </EmptyContent>
         </Empty>
-        <Item className="mt-4 px-0">
+        <Item className="mt-4 rounded-lg border bg-card/60 px-4 py-3 hover:bg-card">
+          <ItemMedia variant="icon"><BookOpen /></ItemMedia>
           <ItemContent><ItemTitle>植物的日常</ItemTitle><ItemDescription>12 张植物学示例卡片</ItemDescription></ItemContent>
           <ItemActions><Button variant="ghost" size="sm" disabled={busy} onClick={loadDemo}>打开示例<ChevronRight /></Button></ItemActions>
         </Item>
@@ -318,7 +319,7 @@ export function AnkiReader() {
             <ScrollArea ref={list} className="reader-scroll min-h-0 flex-1 max-[760px]:h-60 max-[760px]:flex-none">
               {filtered.length ? <ItemGroup aria-label="搜索结果">
                 {filtered.slice(start, start + PAGE_SIZE).map((item) => <div role="listitem" key={item.id}>
-                  <Item size="sm" asChild className="w-full rounded-none border-0 text-left hover:bg-accent/50 focus-visible:ring-inset aria-pressed:bg-accent">
+                  <Item size="sm" asChild className="w-full rounded-none border-0 text-left transition-colors hover:bg-accent/50 aria-pressed:bg-accent aria-pressed:hover:bg-accent focus-visible:ring-inset">
                     <button type="button" aria-pressed={item.id === view.selected} onClick={() => setView((current) => ({ ...current, selected: item.id, face: "front" }))}>
                       <span className="flex min-w-0 flex-1 flex-col gap-1">
                         <span className="truncate text-sm font-medium">{item.title}</span>
@@ -369,6 +370,18 @@ export function AnkiReader() {
       <footer className="app-footer"><Button variant="link" size="sm" asChild className="px-0 text-xs text-muted-foreground"><a href="/vendor/LICENSES.txt" target="_blank" rel="noopener">开源许可</a></Button><span>{session ? "← → 切换卡片 · 空格查看答案" : "支持新旧版 Anki 卡包"}</span></footer>
     </SidebarInset>
     <Input ref={fileInput} type="file" accept=".apkg,.colpkg,.anki2" className="hidden" onChange={(event) => { importFile(event.target.files?.[0]); event.target.value = ""; }} />
-    {dragging && <Empty className="fixed inset-4 z-50 border-2 border-primary bg-background/95"><EmptyTitle>松开，打开这个卡包</EmptyTitle></Empty>}
+    {dragging && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-background/85 backdrop-blur-sm pointer-events-none transition-all">
+        <Empty className="w-full max-w-lg rounded-2xl border-2 border-dashed border-primary bg-card/95 p-10 shadow-2xl">
+          <EmptyHeader>
+            <EmptyMedia variant="icon" className="size-16 rounded-full border-primary/20 bg-primary/10 text-primary">
+              <Upload className="size-8" />
+            </EmptyMedia>
+            <EmptyTitle className="text-xl font-semibold">松开鼠标，打开卡包</EmptyTitle>
+            <EmptyDescription>.apkg / .colpkg / .anki2 · 文件仅在本地浏览器解析</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </div>
+    )}
   </SidebarProvider>;
 }
