@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { BookOpen, ChevronLeft, ChevronRight, CircleAlert, Folder, Layers, Plus, Search, ShieldCheck, Upload, X } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
@@ -220,7 +221,7 @@ export function AnkiReader() {
     <Sidebar collapsible="none" role="complementary" aria-label="卡包导航" className="reader-sidebar sticky top-0 h-dvh w-full max-[760px]:static max-[760px]:h-auto">
       <SidebarHeader className="gap-8 p-0">
         <Link className="brand" href="/" aria-label="拾卡首页" onClick={() => { if (!busy) { setSession(null); setView(initialView); setStatus(null); } }}>
-          <Layers strokeWidth={1.6} /><span>拾卡<span className="brand-en">Anki Reader</span></span>
+          <Image className="brand-icon" src="/icon.svg" alt="" width={40} height={40} unoptimized /><span>拾卡<span className="brand-en">Anki Reader</span></span>
         </Link>
         <Button size="lg" className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 max-[760px]:hidden" disabled={busy} onClick={chooseFile}><Plus />导入卡包</Button>
       </SidebarHeader>

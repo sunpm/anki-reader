@@ -77,7 +77,7 @@
 @layer components {
   .reader-sidebar { min-width: 0; padding: 36px 20px 24px; }
   .brand { display: flex; gap: 12px; align-items: center; padding: 0 8px; font-size: 25px; font-weight: 650; letter-spacing: .02em; }
-  .brand > svg { width: 31px; height: 36px; color: var(--sidebar-primary); }
+  .brand-icon { width: 40px; height: 40px; flex-shrink: 0; }
   .brand-en { display: block; color: var(--brand-sub); font-size: 12px; letter-spacing: .06em; font-weight: 400; margin-top: 3px; }
   .main { min-width: 0; min-height: 100dvh; }
   .topbar { min-height: 78px; border-bottom: 1px solid var(--border); background: #fcfbf9; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -123,7 +123,7 @@
     .reader-sidebar [data-slot="sidebar-content"] { scrollbar-width: none; -webkit-overflow-scrolling: touch; }
     .reader-sidebar [data-slot="sidebar-content"]::-webkit-scrollbar { display: none; }
     .brand { font-size: 22px; padding: 0; }
-    .brand > svg { width: 25px; height: 30px; }
+    .brand-icon { width: 32px; height: 32px; }
     .brand-en { display: none; }
     .main { min-height: calc(100dvh - 66px); }
     .topbar { min-height: 55px; padding: 0 19px; }
